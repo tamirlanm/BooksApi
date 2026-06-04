@@ -13,13 +13,13 @@ namespace BooksApi.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly IBooKService _bookService;
-        public BooksController(IBooKService booKService) => _bookService = booKService;
+        private readonly IBookService _bookService;
+        public BooksController(IBookService booKService) => _bookService = booKService;
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var books = _bookService.GetAll();
+            var books = await _bookService.GetAllAsync();
             var response = books.Select(b => new BookResponse{
                 Id = b.Id,
                 Title = b.Title,
@@ -31,9 +31,9 @@ namespace BooksApi.Controllers
         }
 
         [HttpGet("{id:long}")]
-        public IActionResult GetById([FromRoute] long id)
+        public async Task<IActionResult> GetById([FromRoute] long id)
         {
-            var book = _bookService.GetById(id);
+            var book = await _bookService.GetByIdAsync(id);
             
             var response = new BookResponse{
                 Id = book.Id,
@@ -47,7 +47,7 @@ namespace BooksApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CreateBookRequest request)
+        public async Task<IActionResult> CreateAsync(CreateBookRequest request)
         {
             var book = new Book
             {
@@ -56,12 +56,12 @@ namespace BooksApi.Controllers
                 Year = request.Year,
                 Price = request.Price
             };
-            var created = _bookService.Create(book);
+            var created = await _bookService.CreateAsync(book);
             return CreatedAtAction(nameof(GetById), new { id = created.Id}, created);
         }
 
         [HttpPut("{id:long}")]
-        public IActionResult Update([FromRoute] long id, [FromBody] CreateBookRequest request)
+        public async Task<IActionResult> Update([FromRoute] long id, [FromBody] CreateBookRequest request)
         {
             var book = new Book
             {
@@ -71,16 +71,15 @@ namespace BooksApi.Controllers
                 Price = request.Price
             };
 
-            var updated = _bookService.Update(id, book);
+            await _bookService.UpdateAsync(id, book);
             
             return NoContent();
         }
 
         [HttpDelete("{id:long}")]
-        public IActionResult Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
-            var deleted = _bookService.Delete(id);
-            
+            await _bookService.DeleteAsync(id);
             return NoContent();
         }
 

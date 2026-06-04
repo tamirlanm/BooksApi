@@ -1,10 +1,10 @@
 using BooksApi.Models;
 
-public interface IBooKService
+public interface IBookService
 {
-    IEnumerable<Book> GetAll();
-    Book GetById(long id);
-    Book Create(Book book);
-    bool Update(long id, Book book);
-    bool Delete(long id);
+    Task<IEnumerable<Book>> GetAllAsync();
+    Task<Book> GetByIdAsync(long id);
+    Task<Book> CreateAsync(Book book);
+    Task<bool> UpdateAsync(long id, Book book);
+    Task<bool> DeleteAsync(long id);
 }
