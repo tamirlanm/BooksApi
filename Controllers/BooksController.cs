@@ -34,10 +34,7 @@ namespace BooksApi.Controllers
         public IActionResult GetById([FromRoute] long id)
         {
             var book = _bookService.GetById(id);
-            if(book == null)
-            {
-                return NotFound(new {message = $"Книга с ID {id} не найдена."});
-            }
+            
             var response = new BookResponse{
                 Id = book.Id,
                 Title = book.Title,
@@ -75,10 +72,7 @@ namespace BooksApi.Controllers
             };
 
             var updated = _bookService.Update(id, book);
-            if (!updated)
-            {
-                return NotFound();
-            }
+            
             return NoContent();
         }
 
@@ -86,10 +80,7 @@ namespace BooksApi.Controllers
         public IActionResult Delete(long id)
         {
             var deleted = _bookService.Delete(id);
-            if (!deleted)
-            {
-                return NotFound();
-            }
+            
             return NoContent();
         }
 

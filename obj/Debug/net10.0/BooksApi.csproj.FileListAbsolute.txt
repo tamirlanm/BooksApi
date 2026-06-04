@@ -313,3 +313,4 @@ C:\Users\TamirlanM\Desktop\book-api\BooksApi\bin\Debug\net10.0\runtimes\win-x86\
 C:\Users\TamirlanM\Desktop\book-api\BooksApi\bin\Debug\net10.0\FluentValidation.dll
 C:\Users\TamirlanM\Desktop\book-api\BooksApi\bin\Debug\net10.0\FluentValidation.AspNetCore.dll
 C:\Users\TamirlanM\Desktop\book-api\BooksApi\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Users\TamirlanM\Desktop\book-api\BooksApi\obj\Debug\net10.0\BooksApi.sourcelink.json

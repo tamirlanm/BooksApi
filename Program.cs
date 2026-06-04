@@ -12,13 +12,13 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<BookContext>(opt => opt.UseSqlite("Data Source=books.db"));
-builder.Services.AddSingleton<IBooKService, BookService>();
-builder.Services.AddSingleton<RequestCounterService>();
+builder.Services.AddScoped<IBooKService, BookService>();
+builder.Services.AddScoped<RequestCounterService>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateBookRequest>();
 
-
 var app = builder.Build();
+app.UseMiddleware<GlobalExceptionMiddleware>();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<BookContext>();
