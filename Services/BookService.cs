@@ -57,9 +57,9 @@ public class BookService : IBookService
         var existingBook = _books.FirstOrDefault(b => b.Id == id);
         if(existingBook == null)
         {
-            throw new NotFoundException($"Current book with Id={existingBook} is not found");
+            throw new NotFoundException($"Current book with Id={id} is not found.");
         }
-        var validationResult = await _validator.ValidateAsync(existingBook);
+        var validationResult = await _validator.ValidateAsync(book);
         if (!validationResult.IsValid)
         {
             var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
@@ -79,7 +79,7 @@ public class BookService : IBookService
         var existingBook = _books.FirstOrDefault(b => b.Id == id);
         if(existingBook == null)
         {
-            throw new NotFoundException($"Current {existingBook} book is not found.");
+            throw new NotFoundException($"Current book with Id={id} is not found.");
         }
         _books.Remove(existingBook);
         return true;
