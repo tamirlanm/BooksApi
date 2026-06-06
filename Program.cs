@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using BooksApi.Models;
-using Microsoft.AspNetCore.Mvc;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 
@@ -13,9 +12,10 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<BookContext>(opt => opt.UseSqlite("Data Source=books.db"));
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IValidator<CreateBookRequest>, CreateBookValidator>();
 builder.Services.AddScoped<RequestCounterService>();
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateBookRequest>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateBookValidator>();
 
 var app = builder.Build();
 app.UseMiddleware<GlobalExceptionMiddleware>();

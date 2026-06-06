@@ -5,16 +5,12 @@ using FluentValidation;
 
 public class BookService : IBookService
 {
-    private readonly List<Book> _books = new();
+    private static readonly List<Book> _books = new();
     private long _nextId = 1;
     //private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1,1);
     //private readonly object _lock = new();
     //private readonly CreateBookValidator _validator = new CreateBookValidator();
-    private readonly IValidator<Book> _validator;
-    public BookService(IValidator<Book> validator)
-    {
-        _validator = validator;
-    }
+    
 
     public async Task<IEnumerable<Book>> GetAllAsync()
     {
@@ -31,12 +27,6 @@ public class BookService : IBookService
 
     public async Task<Book> CreateAsync(Book book)
     {
-        var validationResult = await _validator.ValidateAsync(book);
-        if (!validationResult.IsValid)
-        {
-            var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-            throw new BadRequestException($"Error validation: {errors}");
-        }
         
         var newBook = new Book
         {
@@ -59,12 +49,7 @@ public class BookService : IBookService
         {
             throw new NotFoundException($"Current book with Id={id} is not found.");
         }
-        var validationResult = await _validator.ValidateAsync(book);
-        if (!validationResult.IsValid)
-        {
-            var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-            throw new BadRequestException($"Validation error: {errors}");
-        }
+        
         existingBook.Title = book.Title;
         existingBook.Author = book.Author;
         existingBook.Year = book.Year;

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BooksApi.Models;
+using FluentValidation;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace BooksApi.Controllers
 {
@@ -14,7 +16,13 @@ namespace BooksApi.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
-        public BooksController(IBookService booKService) => _bookService = booKService;
+        private readonly IValidator<CreateBookRequest> _validator;
+    
+        public BooksController(IBookService booKService, IValidator<CreateBookRequest> validator)
+        {
+            _bookService = booKService;
+            _validator = validator;        
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -49,6 +57,12 @@ namespace BooksApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync(CreateBookRequest request)
         {
+            var validationResult = await _validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new BadRequestException($"Error validation: {errors}");
+            }
             var book = new Book
             {
                 Title = request.Title,
@@ -63,6 +77,12 @@ namespace BooksApi.Controllers
         [HttpPut("{id:long}")]
         public async Task<IActionResult> Update([FromRoute] long id, [FromBody] CreateBookRequest request)
         {
+            var validationResult = await _validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new BadRequestException($"Error validation: {errors}");
+            }
             var book = new Book
             {
                 Title = request.Title,
