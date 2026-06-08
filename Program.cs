@@ -4,13 +4,14 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<BookContext>(opt => opt.UseSqlite("Data Source=books.db"));
+//builder.Services.AddDbContext<BookContext>(opt => opt.UseSqlite("Data Source=books.db"));
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connectionString));
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IValidator<CreateBookRequest>, CreateBookValidator>();
 builder.Services.AddScoped<RequestCounterService>();
@@ -19,11 +20,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateBookValidator>();
 
 var app = builder.Build();
 app.UseMiddleware<GlobalExceptionMiddleware>();
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<BookContext>();
-    db.Database.EnsureCreated();
-}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

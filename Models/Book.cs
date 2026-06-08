@@ -8,4 +8,5 @@ public class Book
     public string Author {get;set;} = "";
     public int Year {get;set;}
     public decimal Price {get;set;}
+    public bool IsAvailable {get;set;}
 }
