@@ -1,4 +1,6 @@
 
+using BooksApi.Models;
+
 public class BookResponse
 {
     public long Id {get;set;}
@@ -6,4 +8,6 @@ public class BookResponse
     public string Author {get;set;} = "";
     public int Year {get;set;}
     public decimal Price {get;set;}
+    public bool IsAvailable {get;set;}
+    public string GenreName {get;set;} = "";
 }

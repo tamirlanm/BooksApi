@@ -13,9 +13,10 @@ builder.Services.AddOpenApi();
 //builder.Services.AddDbContext<BookContext>(opt => opt.UseSqlite("Data Source=books.db"));
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connectionString));
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IValidator<CreateBookRequest>, CreateBookValidator>();
 builder.Services.AddScoped<RequestCounterService>();
-builder.Services.AddFluentValidationAutoValidation();
+//builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateBookValidator>();
 
 var app = builder.Build();

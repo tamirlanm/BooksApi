@@ -28,12 +28,52 @@ namespace BooksApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             var books = await _bookService.GetAllAsync();
-            var response = books.Select(b => new BookResponse{
-                Id = b.Id,
-                Title = b.Title,
-                Author = b.Author,
-                Year = b.Year,
-                Price = b.Price
+            var response = books.Select(book => new BookResponse
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                Year = book.Year,
+                Price = book.Price,
+                IsAvailable = book.IsAvailable,
+                GenreName = book.Genre?.Name ?? "Без Жанра"
+            });
+            return Ok(response);
+        }
+
+        [HttpGet("genre/{genreId:int}")]
+        public async Task<IActionResult> GetByGenre([FromRoute] int genreId)
+        {
+            var books = await _bookService.GetByGenreAsync(genreId);
+            var response = books.Select(book => new BookResponse{
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                Year = book.Year,
+                Price = book.Price,
+                IsAvailable = book.IsAvailable,
+                GenreName = book.Genre?.Name ?? "Без Жанра"
+            });         
+            return Ok(response);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                throw new BadRequestException($"Search query cannot be empty");
+            }
+            var books = await _bookService.SearchAsync(query);
+            var response = books.Select(book => new BookResponse
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                Year = book.Year,
+                Price = book.Price,
+                IsAvailable = book.IsAvailable,
+                GenreName = book.Genre?.Name ?? "Без жанра"
             });
             return Ok(response);
         }
@@ -48,14 +88,15 @@ namespace BooksApi.Controllers
                 Title = book.Title,
                 Author = book.Author,
                 Year = book.Year,
-                Price = book.Price
+                Price = book.Price,
+                IsAvailable = book.IsAvailable,
+                GenreName = book.Genre?.Name ?? "Без Жанра"
             };
-
             return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateBookRequest request)
+        public async Task<IActionResult> Create(CreateBookRequest request)
         {
             var validationResult = await _validator.ValidateAsync(request);
             if (!validationResult.IsValid)
@@ -68,7 +109,9 @@ namespace BooksApi.Controllers
                 Title = request.Title,
                 Author = request.Author,
                 Year = request.Year,
-                Price = request.Price
+                Price = request.Price,
+                IsAvailable = request.IsAvailable,
+                GenreId = request.GenreId
             };
             var created = await _bookService.CreateAsync(book);
             return CreatedAtAction(nameof(GetById), new { id = created.Id}, created);
@@ -88,7 +131,9 @@ namespace BooksApi.Controllers
                 Title = request.Title,
                 Author = request.Author,
                 Year = request.Year,
-                Price = request.Price
+                Price = request.Price,
+                IsAvailable = request.IsAvailable,
+                GenreId = request.GenreId
             };
 
             await _bookService.UpdateAsync(id, book);
