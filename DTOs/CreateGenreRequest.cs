@@ -1,3 +1,4 @@
+namespace BooksApi.DTOs;
 
 public class CreateGenreRequest
 {

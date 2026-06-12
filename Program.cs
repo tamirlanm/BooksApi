@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BooksApi.Models;
 using FluentValidation.AspNetCore;
 using FluentValidation;
+using BooksApi.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -16,6 +17,9 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IValidator<CreateBookRequest>, CreateBookValidator>();
 builder.Services.AddScoped<RequestCounterService>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IRepository<Genre>, GenreRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateBookValidator>();
 

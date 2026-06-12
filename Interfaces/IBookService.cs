@@ -1,12 +1,13 @@
+using BooksApi.DTOs;
 using BooksApi.Models;
 
 public interface IBookService
 {
-    Task<IEnumerable<Book>> GetAllAsync();
-    Task<IEnumerable<Book>> GetByGenreAsync(int genreId);
-    Task<IEnumerable<Book>> SearchAsync(string query);
-    Task<Book> GetByIdAsync(long id);
-    Task<Book> CreateAsync(Book book);
-    Task<bool> UpdateAsync(long id, Book book);
-    Task<bool> DeleteAsync(long id);
+    Task<IEnumerable<BookResponse>> GetAllBooksAsync();
+    Task<IEnumerable<BookResponse>> GetBookByGenreAsync(int genreId);
+    Task<IEnumerable<BookResponse>> SearchBookAsync(string query);
+    Task<BookResponse> GetBookByIdAsync(int id);
+    Task<BookResponse> CreateBookAsync(CreateBookRequest request);
+    Task<bool> UpdateBookAsync(int id, CreateBookRequest request);
+    Task<bool> DeleteBookAsync(int id);
 }

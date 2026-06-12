@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BooksApi.Models;
 using FluentValidation;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using BooksApi.DTOs;
 
 namespace BooksApi.Controllers
 {
@@ -27,8 +28,8 @@ namespace BooksApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var books = await _bookService.GetAllAsync();
-            var response = books.Select(book => new BookResponse
+            var response = await _bookService.GetAllBooksAsync();
+            /*var response = books.Select(book => new BookResponse
             {
                 Id = book.Id,
                 Title = book.Title,
@@ -37,15 +38,15 @@ namespace BooksApi.Controllers
                 Price = book.Price,
                 IsAvailable = book.IsAvailable,
                 GenreName = book.Genre?.Name ?? "Без Жанра"
-            });
+            });*/
             return Ok(response);
         }
 
         [HttpGet("genre/{genreId:int}")]
         public async Task<IActionResult> GetByGenre([FromRoute] int genreId)
         {
-            var books = await _bookService.GetByGenreAsync(genreId);
-            var response = books.Select(book => new BookResponse{
+            var response = await _bookService.GetBookByGenreAsync(genreId);
+            /*var response = books.Select(book => new BookResponse{
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
@@ -53,7 +54,7 @@ namespace BooksApi.Controllers
                 Price = book.Price,
                 IsAvailable = book.IsAvailable,
                 GenreName = book.Genre?.Name ?? "Без Жанра"
-            });         
+            });*/         
             return Ok(response);
         }
 
@@ -64,8 +65,8 @@ namespace BooksApi.Controllers
             {
                 throw new BadRequestException($"Search query cannot be empty");
             }
-            var books = await _bookService.SearchAsync(query);
-            var response = books.Select(book => new BookResponse
+            var response = await _bookService.SearchBookAsync(query);
+            /*var response = books.Select(book => new BookResponse
             {
                 Id = book.Id,
                 Title = book.Title,
@@ -74,16 +75,15 @@ namespace BooksApi.Controllers
                 Price = book.Price,
                 IsAvailable = book.IsAvailable,
                 GenreName = book.Genre?.Name ?? "Без жанра"
-            });
+            });*/
             return Ok(response);
         }
 
-        [HttpGet("{id:long}")]
-        public async Task<IActionResult> GetById([FromRoute] long id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var book = await _bookService.GetByIdAsync(id);
-            
-            var response = new BookResponse{
+            var response = await _bookService.GetBookByIdAsync(id);   
+            /*var response = new BookResponse{
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
@@ -91,19 +91,19 @@ namespace BooksApi.Controllers
                 Price = book.Price,
                 IsAvailable = book.IsAvailable,
                 GenreName = book.Genre?.Name ?? "Без Жанра"
-            };
+            };*/
             return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateBookRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateBookRequest request)
         {
             var validationResult = await _validator.ValidateAsync(request);
             if (!validationResult.IsValid)
             {
                 var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
                 throw new BadRequestException($"Error validation: {errors}");
-            }
+            }/*
             var book = new Book
             {
                 Title = request.Title,
@@ -112,13 +112,13 @@ namespace BooksApi.Controllers
                 Price = request.Price,
                 IsAvailable = request.IsAvailable,
                 GenreId = request.GenreId
-            };
-            var created = await _bookService.CreateAsync(book);
+            };*/
+            var created = await _bookService.CreateBookAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = created.Id}, created);
         }
 
-        [HttpPut("{id:long}")]
-        public async Task<IActionResult> Update([FromRoute] long id, [FromBody] CreateBookRequest request)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreateBookRequest request)
         {
             var validationResult = await _validator.ValidateAsync(request);
             if (!validationResult.IsValid)
@@ -126,25 +126,16 @@ namespace BooksApi.Controllers
                 var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
                 throw new BadRequestException($"Error validation: {errors}");
             }
-            var book = new Book
-            {
-                Title = request.Title,
-                Author = request.Author,
-                Year = request.Year,
-                Price = request.Price,
-                IsAvailable = request.IsAvailable,
-                GenreId = request.GenreId
-            };
 
-            await _bookService.UpdateAsync(id, book);
+            await _bookService.UpdateBookAsync(id, request);
             
             return NoContent();
         }
 
-        [HttpDelete("{id:long}")]
-        public async Task<IActionResult> Delete(long id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            await _bookService.DeleteAsync(id);
+            await _bookService.DeleteBookAsync(id);
             return NoContent();
         }
 
@@ -165,8 +156,8 @@ namespace BooksApi.Controllers
         }
 
         // GET: api/Books/5
-        [HttpGet("{id:long}")]
-        public async Task<ActionResult<Book>> GetBook([FromRoute] long id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Book>> GetBook([FromRoute] int id)
         {
             var book = await _context.Books.FindAsync(id);
 

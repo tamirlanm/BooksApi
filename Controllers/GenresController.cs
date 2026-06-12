@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BooksApi.Models;
 using FluentValidation;
+using BooksApi.DTOs;
 
 namespace BooksApi.Controllers
 {
@@ -24,12 +25,12 @@ namespace BooksApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var genres = await _genreService.GetAllAsync();
-            var response = genres.Select(genre=> new GenreResponse
+            var genres = await _genreService.GetAllGenresAsync();
+            /*var response = genres.Select(genre=> new GenreResponse
             {
                 Id = genre.Id,
                 Name = genre.Name
-            });
+            });*/
             return Ok(genres);
         }
 
@@ -41,12 +42,12 @@ namespace BooksApi.Controllers
             {
                 var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
                 throw new BadRequestException($"Error validation: {errors}");
-            }
+            }/*
             var genre = new Genre
             {
                 Name = request.Name
-            };
-            var created = await _genreService.CreateAsync(genre);
+            };*/
+            var created = await _genreService.CreateGenreAsync(request);
             return Ok(created);
         }
     }

@@ -1,3 +1,4 @@
+namespace BooksApi.DTOs;
 public class CreateBookRequest
 {
     public string Title {get;set;} = "";

@@ -1,4 +1,4 @@
-
+namespace BooksApi.DTOs;
 public class GenreResponse
 {
     public int Id {get;set;}

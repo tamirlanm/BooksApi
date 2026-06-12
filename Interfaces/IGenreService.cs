@@ -1,6 +1,7 @@
+using BooksApi.DTOs;
 using BooksApi.Models;
 public interface IGenreService
 {
-    Task<IEnumerable<Genre>> GetAllAsync();
-    Task<Genre> CreateAsync(Genre genre);
+    Task<IEnumerable<GenreResponse>> GetAllGenresAsync();
+    Task<GenreResponse> CreateGenreAsync(CreateGenreRequest request);
 }

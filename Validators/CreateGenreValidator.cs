@@ -1,4 +1,5 @@
 using System.Data;
+using BooksApi.DTOs;
 using FluentValidation;
 
 public class CreateGenreValidator : AbstractValidator<CreateGenreRequest>
