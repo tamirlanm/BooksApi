@@ -9,6 +9,7 @@ using BooksApi.Models;
 using FluentValidation;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using BooksApi.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BooksApi.Controllers
 {
@@ -24,7 +25,6 @@ namespace BooksApi.Controllers
             _bookService = booKService;
             _validator = validator;        
         }
-
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -41,7 +41,6 @@ namespace BooksApi.Controllers
             });*/
             return Ok(response);
         }
-
         [HttpGet("genre/{genreId:int}")]
         public async Task<IActionResult> GetByGenre([FromRoute] int genreId)
         {
@@ -57,7 +56,6 @@ namespace BooksApi.Controllers
             });*/         
             return Ok(response);
         }
-
         [HttpGet("search")]
         public async Task<IActionResult> Search([FromQuery] string query)
         {
@@ -78,7 +76,6 @@ namespace BooksApi.Controllers
             });*/
             return Ok(response);
         }
-
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
@@ -94,7 +91,7 @@ namespace BooksApi.Controllers
             };*/
             return Ok(response);
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBookRequest request)
         {
@@ -116,7 +113,7 @@ namespace BooksApi.Controllers
             var created = await _bookService.CreateBookAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = created.Id}, created);
         }
-
+        [Authorize]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreateBookRequest request)
         {
@@ -131,7 +128,7 @@ namespace BooksApi.Controllers
             
             return NoContent();
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
