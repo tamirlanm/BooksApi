@@ -27,31 +27,13 @@ namespace BooksApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             var response = await _bookService.GetAllBooksAsync();
-            /*var response = books.Select(book => new BookResponse
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Author = book.Author,
-                Year = book.Year,
-                Price = book.Price,
-                IsAvailable = book.IsAvailable,
-                GenreName = book.Genre?.Name ?? "Без Жанра"
-            });*/
+            
             return Ok(response);
         }
         [HttpGet("genre/{genreId:int}")]
         public async Task<IActionResult> GetByGenre([FromRoute] int genreId)
         {
-            var response = await _bookService.GetBookByGenreAsync(genreId);
-            /*var response = books.Select(book => new BookResponse{
-                Id = book.Id,
-                Title = book.Title,
-                Author = book.Author,
-                Year = book.Year,
-                Price = book.Price,
-                IsAvailable = book.IsAvailable,
-                GenreName = book.Genre?.Name ?? "Без Жанра"
-            });*/         
+            var response = await _bookService.GetBookByGenreAsync(genreId);      
             return Ok(response);
         }
         [HttpGet("search")]
@@ -62,47 +44,19 @@ namespace BooksApi.Controllers
                 throw new BadRequestException($"Search query cannot be empty");
             }
             var response = await _bookService.SearchBookAsync(query);
-            /*var response = books.Select(book => new BookResponse
-            {
-                Id = book.Id,
-                Title = book.Title,
-                Author = book.Author,
-                Year = book.Year,
-                Price = book.Price,
-                IsAvailable = book.IsAvailable,
-                GenreName = book.Genre?.Name ?? "Без жанра"
-            });*/
+        
             return Ok(response);
         }
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var response = await _bookService.GetBookByIdAsync(id);   
-            /*var response = new BookResponse{
-                Id = book.Id,
-                Title = book.Title,
-                Author = book.Author,
-                Year = book.Year,
-                Price = book.Price,
-                IsAvailable = book.IsAvailable,
-                GenreName = book.Genre?.Name ?? "Без Жанра"
-            };*/
             return Ok(response);
         }
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBookRequest request)
         {
-            /*
-            var book = new Book
-            {
-                Title = request.Title,
-                Author = request.Author,
-                Year = request.Year,
-                Price = request.Price,
-                IsAvailable = request.IsAvailable,
-                GenreId = request.GenreId
-            };*/
             var created = await _bookService.CreateBookAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = created.Id}, created);
         }
@@ -122,98 +76,5 @@ namespace BooksApi.Controllers
             return NoContent();
         }
 
-        /*
-        private readonly BookContext _context;
-
-        public BooksController(BookContext context)
-        {
-            _context = context;
-        }
-
-        
-        // GET: api/Books
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
-        {
-            return await _context.Books.ToListAsync();
-        }
-
-        // GET: api/Books/5
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<Book>> GetBook([FromRoute] int id)
-        {
-            var book = await _context.Books.FindAsync(id);
-
-            if (book == null)
-            {
-                return NotFound();
-            }
-
-            return book;
-        }
-
-        // PUT: api/Books/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id:long}")]
-        public async Task<IActionResult> PutBook([FromRoute] long id,[FromBody] Book book)
-        {
-            if (id != book.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(book).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Books
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
-        {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetBook", new { id = book.Id }, book);
-        }
-
-        // DELETE: api/Books/5
-        [HttpDelete("{id:long}")]
-        public async Task<IActionResult> DeleteBook([FromRoute] long id)
-        {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-            {
-                return NotFound();
-            }
-
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-        
-
-        private bool BookExists(long id)
-        {
-            return _context.Books.Any(e => e.Id == id);
-        }*/
     }
 }
