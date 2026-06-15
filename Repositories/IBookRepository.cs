@@ -1,4 +1,5 @@
 using BooksApi.Models;
+using BooksApi.Repositories;
 
 public interface IBookRepository : IRepository<Book>
 {

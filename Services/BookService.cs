@@ -5,10 +5,12 @@ using BooksApi.Models;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using BooksApi.DTOs;
-
+namespace BooksApi.Services;
 public class BookService : IBookService
 {
     private readonly IUnitOfWork _uow;
+    private readonly IValidator<CreateBookRequest> _validator;
+
     //private readonly AppDbContext _db; 
     //private static readonly List<Book> _books = new();
     //private long _nextId = 1;
@@ -16,7 +18,10 @@ public class BookService : IBookService
     //private readonly object _lock = new();
     //private readonly CreateBookValidator _validator = new CreateBookValidator();
     
-    public BookService(IUnitOfWork uow) => _uow = uow;
+    public BookService(IUnitOfWork uow, IValidator<CreateBookRequest> validator) {
+        _uow = uow;
+        _validator = validator;
+    }
 
     public async Task<IEnumerable<BookResponse>> GetAllBooksAsync()
     {
@@ -65,7 +70,15 @@ public class BookService : IBookService
 
     public async Task<BookResponse> CreateBookAsync(CreateBookRequest request)
     {        
+        var validationResult = await _validator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new BadRequestException($"Error validation: {errors}");
+        }
+
         var genre = await _uow.Genres.GetByIdAsync(request.GenreId);
+        if(genre is null) throw new NotFoundException($"Genre with Id={request.GenreId} not found");
         
         var newBook = new Book
         {
@@ -93,6 +106,12 @@ public class BookService : IBookService
 
     public async Task<bool> UpdateBookAsync(int id, CreateBookRequest request)
     {
+        var validationResult = await _validator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new BadRequestException($"Error validation: {errors}");
+        }
         
         var existingBook = await _uow.Books.GetByIdAsync(id);
         if(existingBook == null)

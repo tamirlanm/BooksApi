@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BooksApi.Models;
 using FluentValidation;
 using BooksApi.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BooksApi.Controllers
 {
@@ -33,7 +34,7 @@ namespace BooksApi.Controllers
             });*/
             return Ok(genres);
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreateGenreRequest request)
         {

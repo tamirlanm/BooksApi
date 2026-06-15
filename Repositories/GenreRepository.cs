@@ -1,3 +1,4 @@
+using BooksApi.Repositories;
 using Microsoft.EntityFrameworkCore;
 public class GenreRepository : IRepository<Genre>
 {

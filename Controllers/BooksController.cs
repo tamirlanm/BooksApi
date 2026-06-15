@@ -18,12 +18,10 @@ namespace BooksApi.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;
-        private readonly IValidator<CreateBookRequest> _validator;
-    
-        public BooksController(IBookService booKService, IValidator<CreateBookRequest> validator)
+        
+        public BooksController(IBookService booKService )
         {
-            _bookService = booKService;
-            _validator = validator;        
+            _bookService = booKService;     
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -95,12 +93,7 @@ namespace BooksApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBookRequest request)
         {
-            var validationResult = await _validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-                throw new BadRequestException($"Error validation: {errors}");
-            }/*
+            /*
             var book = new Book
             {
                 Title = request.Title,
@@ -117,13 +110,6 @@ namespace BooksApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CreateBookRequest request)
         {
-            var validationResult = await _validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-                throw new BadRequestException($"Error validation: {errors}");
-            }
-
             await _bookService.UpdateBookAsync(id, request);
             
             return NoContent();
