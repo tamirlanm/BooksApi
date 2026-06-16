@@ -1,19 +1,17 @@
-***
-
 # 📚 Books API
 
 **Books API** — это RESTful веб-сервис для управления библиотекой книг, написанный на **ASP.NET Core (.NET 8)**. Проект демонстрирует использование современных архитектурных подходов, таких как Clean Architecture (N-Tier), Repository & Unit of Work паттерны, а также контейнеризацию с помощью Docker.
 
 ## 🚀 Технологический стек
 
-- **Фреймворк:** .NET 8 / ASP.NET Core Web API
+- **Фреймворк:** .NET 10 / ASP.NET Core Web API
 - **База данных:** PostgreSQL
 - **ORM:** Entity Framework Core
 - **Архитектура:** Controller-Service-Repository, Unit of Work
 - **Аутентификация/Авторизация:** JWT (JSON Web Tokens)
 - **Валидация:** FluentValidation
 - **Контейнеризация:** Docker, Docker Compose
-- **Документация API:** OpenAPI (Swagger) с использованием [Scalar](https://github.com/scalar/scalar) темы
+- **Документация API:** OpenAPI (Scalar) с использованием [Scalar](https://github.com/scalar/scalar) темы
 - **Обработка ошибок:** Custom Global Exception Middleware
 
 ## 🏗️ Архитектура проекта
@@ -24,7 +22,7 @@
 - `Repositories/` — абстракция над Entity Framework Core для доступа к данным.
 - `DTOs/` — Data Transfer Objects для защиты доменных моделей и валидации входящих данных.
 - `Models/` — доменные сущности (Entity) базы данных.
-- `Middleware/` — глобальный перехват и обработка исключений (`NotFoundException`, `BadRequestException`).
+- `Middleware/` — глобальный перехват и обработка исключений (`NotFoundException`, `BadRequestException`, `InvalidCredentialException`).
 
 ## 🛠️ Локальный запуск (Docker)
 
@@ -36,7 +34,7 @@
 **Шаги для запуска:**
 1. Склонируйте репозиторий:
    ```bash
-   git clone <url-вашего-репозитория>
+   git clone <https://github.com/tamirlanm/BooksApi>
    cd book-api/BooksApi
    ```
 2. Выполните команду сборки и запуска:
@@ -68,6 +66,7 @@
 
 **Genres (`/api/genres`)**
 - `GET /api/genres` — получить все жанры
+- `POST /api/genres` - создать жанр
 
 ## 📝 Планы по развитию (Roadmap)
 - [ ] Добавление пагинации для списков книг.
@@ -75,5 +74,3 @@
 - [ ] Интеграция MediatR (CQRS).
 
 ***
-
-*** 
