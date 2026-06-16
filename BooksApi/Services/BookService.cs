@@ -1,9 +1,5 @@
-
-using System.ComponentModel.DataAnnotations;
-using BooksApi.Migrations;
 using BooksApi.Models;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using BooksApi.DTOs;
 namespace BooksApi.Services;
 public class BookService : IBookService

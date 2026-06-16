@@ -1,9 +1,4 @@
-using System;
-using BooksApi.Models;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
-using Microsoft.EntityFrameworkCore;
 
 namespace BooksApi.Controllers
 {
