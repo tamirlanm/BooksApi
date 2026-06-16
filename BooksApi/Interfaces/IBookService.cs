@@ -8,6 +8,6 @@ public interface IBookService
     Task<IEnumerable<BookResponse>> SearchBookAsync(string query);
     Task<BookResponse> GetBookByIdAsync(int id);
     Task<BookResponse> CreateBookAsync(CreateBookRequest request);
-    Task<bool> UpdateBookAsync(int id, CreateBookRequest request);
-    Task<bool> DeleteBookAsync(int id);
+    Task<BookResponse> UpdateBookAsync(int id, CreateBookRequest request);
+    Task<BookResponse> DeleteBookAsync(int id);
 }

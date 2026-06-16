@@ -56,16 +56,7 @@ public class BookService : IBookService
     {
         var book = await _uow.Books.GetByIdAsync(id);
         if(book is null) throw new NotFoundException($"Book with id={id} is not found.");
-        return new BookResponse
-        {
-            Id = book.Id,
-            Title = book.Title,
-            Author = book.Author,
-            Year = book.Year,
-            Price = book.Price,
-            IsAvailable = book.IsAvailable,
-            GenreName = book.Genre?.Name ?? "Without Genre"
-        };
+        return book.ToResponse();
     }
 
     public async Task<BookResponse> CreateBookAsync(CreateBookRequest request)
@@ -91,20 +82,10 @@ public class BookService : IBookService
         };
         await _uow.Books.AddAsync(newBook);
         await _uow.SaveChangesAsync();
-        return new BookResponse
-        {
-            Id = newBook.Id,
-            Title = newBook.Title,
-            Author = newBook.Author,
-            Year = newBook.Year,
-            Price = newBook.Price,
-            IsAvailable = newBook.IsAvailable,
-            //GenreId = newBook.GenreId,
-            GenreName = genre!.Name
-        };   
+        return newBook.ToResponse();  
     }
 
-    public async Task<bool> UpdateBookAsync(int id, CreateBookRequest request)
+    public async Task<BookResponse> UpdateBookAsync(int id, CreateBookRequest request)
     {
         var validationResult = await _validator.ValidateAsync(request);
         if (!validationResult.IsValid)
@@ -127,10 +108,10 @@ public class BookService : IBookService
         existingBook.GenreId = request.GenreId;
         _uow.Books.Update(existingBook);
         await _uow.SaveChangesAsync();
-        return true;
+        return existingBook.ToResponse();
         
     }
-    public async Task<bool> DeleteBookAsync(int id)
+    public async Task<BookResponse> DeleteBookAsync(int id)
     {
         
         var existingBook = await _uow.Books.GetByIdAsync(id);
@@ -140,7 +121,7 @@ public class BookService : IBookService
         }
         _uow.Books.Delete(existingBook);
         await _uow.SaveChangesAsync();
-        return true;
+        return existingBook.ToResponse();
     }
 }
 

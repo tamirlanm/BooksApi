@@ -27,27 +27,12 @@ namespace BooksApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             var genres = await _genreService.GetAllGenresAsync();
-            /*var response = genres.Select(genre=> new GenreResponse
-            {
-                Id = genre.Id,
-                Name = genre.Name
-            });*/
             return Ok(genres);
         }
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CreateGenreRequest request)
         {
-            var validationResult = await _validator.ValidateAsync(request);
-            if (!validationResult.IsValid)
-            {
-                var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-                throw new BadRequestException($"Error validation: {errors}");
-            }/*
-            var genre = new Genre
-            {
-                Name = request.Name
-            };*/
             var created = await _genreService.CreateGenreAsync(request);
             return Ok(created);
         }

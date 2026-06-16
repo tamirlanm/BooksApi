@@ -23,7 +23,7 @@ public class AuthService : IAuthService
         bool isUsernameToken = await _db.Users.AnyAsync(u => u.Username == req.Username);
         if (isUsernameToken)
         {
-            throw new Exception("Username already exists");
+            throw new BadRequestException("Username already exists");
         }
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
         var newUser = new User
@@ -41,12 +41,12 @@ public class AuthService : IAuthService
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == req.Username);
         if(user == null)
         {
-            throw new Exception("Invalid username or password");
+            throw new InvalidCredentialException("Invalid username or password");
         }
         bool isPasswordValid = BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash);
         if (!isPasswordValid)
         {
-            throw new Exception("Invalid username or password");
+            throw new InvalidCredentialException("Invalid username or password");
         }
         return GenerateToken(user);
     }

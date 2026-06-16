@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using BooksApi.DTOs;
 using BooksApi.Models;
+using FluentValidation;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +10,13 @@ public class GenreService : IGenreService
     //private readonly AppDbContext _db;
     //public GenreService(AppDbContext db) => _db = db;
     private readonly IUnitOfWork _uow;
-    public GenreService(IUnitOfWork uow) => _uow = uow;
+    private readonly IValidator<CreateGenreRequest> _validator;
+
+    public GenreService(IUnitOfWork uow, IValidator<CreateGenreRequest> validator){
+        _uow = uow;
+        _validator = validator;
+    }
+
 
     public async Task<IEnumerable<GenreResponse>> GetAllGenresAsync()
     {
@@ -22,6 +30,12 @@ public class GenreService : IGenreService
 
     public async Task<GenreResponse> CreateGenreAsync(CreateGenreRequest request)
     {
+        var validationResult = await _validator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            var errors = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new BadRequestException($"Error validation: {errors}");
+        }
         var newGenre = new Genre
         {
             Name = request.Name

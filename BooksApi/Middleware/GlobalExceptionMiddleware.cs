@@ -29,6 +29,12 @@ public class GlobalExceptionMiddleware
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(new {error = ex.Message});
         }
+        catch(InvalidCredentialException ex)
+        {
+            context.Response.StatusCode = 401;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsJsonAsync(new {error = ex.Message});
+        }   
         catch(Exception ex)
         {
             _logger.LogError(ex, "Необработанное исключение.");
