@@ -12,4 +12,4 @@ jobs:
     
     steps:
       - name: Run test
-      run: echo "Test passed"
+        run: echo "Test passed"
